@@ -6,585 +6,484 @@
 <title>EGL Hockey</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:'Courier New',monospace}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:'Courier New',monospace;color:#fff}
 
-#splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0a0f;z-index:1000;transition:opacity 1s}
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:100;background:#0a0a0f}
+.overlay.show{display:flex}
+
+#splash{z-index:1000;transition:opacity 1s}
 #splash.hide{opacity:0;pointer-events:none}
-
 .egl-container{display:flex;flex-direction:column;align-items:center;gap:6px}
-
 .egl-line{display:flex;flex-direction:column;align-items:center;opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.22,1,.36,1)}
 .egl-line.show{opacity:1;transform:translateY(0)}
-
-.egl-letter{
-  font-size:clamp(60px,12vw,120px);font-weight:900;line-height:1;
-  position:relative;
-}
-.egl-letter.E{color:#fff}
-.egl-letter.G{color:#fff}
-.egl-letter.L{color:#fff}
-
-@keyframes letterIn{
-  0%{opacity:0;transform:scale(2.5);filter:blur(20px)}
-  60%{opacity:1;transform:scale(.92);filter:blur(0)}
-  100%{opacity:1;transform:scale(1);filter:blur(0)}
-}
+.egl-letter{font-size:clamp(60px,12vw,120px);font-weight:900;line-height:1;color:#fff}
+@keyframes letterIn{0%{opacity:0;transform:scale(2.5);filter:blur(20px)}60%{opacity:1;transform:scale(.92);filter:blur(0)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
 .egl-line.show .egl-letter{animation:letterIn .6s cubic-bezier(.22,1,.36,1) forwards}
-
-@keyframes glowPulse{
-  0%,100%{text-shadow:0 0 20px currentColor,0 0 40px currentColor}
-  50%{text-shadow:0 0 40px currentColor,0 0 80px currentColor,0 0 120px currentColor}
-}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 20px rgba(255,255,255,.3),0 0 40px rgba(255,255,255,.15)}50%{text-shadow:0 0 40px rgba(255,255,255,.5),0 0 80px rgba(255,255,255,.25)}}
 .egl-line.show .egl-letter{animation:letterIn .6s cubic-bezier(.22,1,.36,1) forwards,glowPulse 2.5s ease-in-out .6s infinite}
-
-@keyframes glitchFlicker{
-  0%,100%{opacity:1;transform:translateX(0)}
-  8%{opacity:.8;transform:translateX(3px)}
-  10%{opacity:1;transform:translateX(-2px)}
-  12%{opacity:.9;transform:translateX(0)}
-  50%{opacity:1;transform:translateX(0)}
-  52%{opacity:.7;transform:translateX(-4px) skewX(2deg)}
-  54%{opacity:1;transform:translateX(1px) skewX(0)}
-}
-
 .egl-sub{display:flex;align-items:center;gap:12px;margin-top:4px;opacity:0;transform:translateX(15px);transition:all .5s .3s}
 .egl-line.show .egl-sub{opacity:1;transform:translateX(0)}
-.egl-sub-line{width:30px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25))}
+.egl-sub-line{width:30px;height:1px;background:rgba(255,255,255,.2)}
 .egl-meaning{font-size:clamp(10px,1.6vw,14px);color:rgba(255,255,255,.4);letter-spacing:3px;text-transform:uppercase}
-
 .cmd-line{position:fixed;bottom:clamp(24px,5vh,60px);right:clamp(24px,4vw,60px);font-size:clamp(11px,1.4vw,14px);color:rgba(255,255,255,.3);opacity:0;transition:opacity .8s 0s;white-space:nowrap}
 .cmd-line.show{opacity:1}
-.cmd-line .cursor{display:inline-block;width:7px;height:1.1em;background:rgba(255,255,255,.45);animation:blink 1.1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
+.cursor{display:inline-block;width:7px;height:1.1em;background:rgba(255,255,255,.45);animation:blink 1.1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
 @keyframes blink{50%{opacity:0}}
-
 .scanline{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);z-index:1001;opacity:0;transition:opacity 1s 2s}
 .scanline.show{opacity:1}
-
 .vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.6) 100%);z-index:999}
 
-#game{display:none;width:100%;height:100%}
-canvas{display:block;width:100%;height:100%}
+#loginScreen{flex-direction:column;gap:20px}
+.login-box{text-align:center}
+.login-box h2{font-size:28px;letter-spacing:4px;margin-bottom:6px}
+.login-box p{font-size:12px;color:rgba(255,255,255,.3);margin-bottom:30px;letter-spacing:2px}
+.login-input{display:block;width:260px;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:13px;letter-spacing:1px;margin:0 auto 12px;outline:none;transition:border-color .2s}
+.login-input:focus{border-color:rgba(255,255,255,.3)}
+.login-input::placeholder{color:rgba(255,255,255,.2)}
+.login-btn{width:260px;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-family:inherit;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s}
+.login-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+.login-err{font-size:11px;color:rgba(255,80,80,.7);height:16px;letter-spacing:1px}
 
-#hud{position:fixed;top:0;left:0;right:0;padding:12px 20px;display:none;justify-content:space-between;align-items:center;z-index:10}
+#searchScreen{flex-direction:column;gap:20px;text-align:center}
+.search-title{font-size:18px;letter-spacing:3px;color:rgba(255,255,255,.6)}
+.search-spinner{width:50px;height:50px;border:2px solid rgba(255,255,255,.08);border-top-color:rgba(255,255,255,.4);border-radius:50%;animation:spin .8s linear infinite;margin:10px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.search-status{font-size:12px;color:rgba(255,255,255,.3);letter-spacing:1px}
+.search-dots::after{content:'';animation:dots 1.5s steps(4,end) infinite}
+@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+
+#menuScreen{flex-direction:column;gap:0}
+.menu-title{font-size:clamp(32px,6vw,52px);font-weight:900;letter-spacing:6px;margin-bottom:4px}
+.menu-sub{font-size:12px;color:rgba(255,255,255,.25);letter-spacing:3px;margin-bottom:40px}
+.menu-btn{display:block;width:200px;padding:12px;margin:6px auto;background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-family:inherit;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s}
+.menu-btn:hover{border-color:rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.04)}
+
+#resultScreen{flex-direction:column;gap:10px;text-align:center}
+.result-title{font-size:36px;font-weight:900;letter-spacing:4px}
+.result-sub{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:20px;letter-spacing:1px}
+.result-reward{font-size:14px;color:rgba(255,215,0,.7);margin-bottom:24px;letter-spacing:1px}
+
+#shopPanel{position:fixed;right:-360px;top:0;bottom:0;width:340px;background:rgba(10,10,15,.97);border-left:1px solid rgba(255,255,255,.06);z-index:200;transition:right .4s cubic-bezier(.22,1,.36,1);padding:24px;overflow-y:auto;backdrop-filter:blur(20px)}
+#shopPanel.open{right:0}
+.shop-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.shop-title{font-size:16px;letter-spacing:3px;color:rgba(255,255,255,.7)}
+.shop-coins{font-size:13px;color:rgba(255,215,0,.6);letter-spacing:1px}
+.shop-close{background:none;border:none;color:rgba(255,255,255,.3);font-size:20px;cursor:pointer;transition:color .2s}
+.shop-close:hover{color:#fff}
+.up-item{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s;position:relative}
+.up-item:hover{border-color:rgba(255,255,255,.15)}
+.up-item.maxed{opacity:.3;pointer-events:none}
+.up-name{font-size:12px;color:rgba(255,255,255,.7);letter-spacing:1px;margin-bottom:4px}
+.up-desc{font-size:10px;color:rgba(255,255,255,.25);margin-bottom:8px}
+.up-bottom{display:flex;justify-content:space-between;align-items:center}
+.up-cost{font-size:11px;color:rgba(255,215,0,.5)}
+.up-lv{font-size:10px;color:rgba(255,255,255,.3)}
+.up-bar{width:100%;height:2px;background:rgba(255,255,255,.05);margin-top:8px}
+.up-bar-fill{height:100%;background:rgba(255,255,255,.3);transition:width .3s}
+
+#gameCanvas{display:none;position:fixed;inset:0;z-index:5}
+#hud{position:fixed;top:0;left:0;right:0;padding:10px 20px;display:none;justify-content:space-between;align-items:center;z-index:10}
 #hud.show{display:flex}
-.hud-score{font-size:28px;font-weight:700;color:#fff;letter-spacing:2px}
-.hud-score span{color:#00ff88}
-.hud-coins{font-size:16px;color:#ffd700;letter-spacing:1px}
-.hud-coins::before{content:'$ '}
-#pause-btn{background:none;border:1px solid rgba(255,255,255,.2);color:#fff;padding:6px 14px;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:1px;transition:all .2s}
-#pause-btn:hover{border-color:#00ff88;color:#00ff88}
+.hud-score{font-size:22px;font-weight:700;letter-spacing:2px}
+.hud-score .me{color:rgba(255,255,255,.9)}
+.hud-score .sep{color:rgba(255,255,255,.15);margin:0 6px}
+.hud-score .en{color:rgba(255,255,255,.9)}
+.hud-shop{background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.4);padding:5px 12px;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:1px;transition:all .2s}
+.hud-shop:hover{border-color:rgba(255,255,255,.3);color:#fff}
 
-#upgrade-panel{position:fixed;right:-340px;top:0;bottom:0;width:320px;background:rgba(10,10,15,.95);border-left:1px solid rgba(255,255,255,.08);z-index:20;transition:right .4s cubic-bezier(.22,1,.36,1);padding:20px;overflow-y:auto;backdrop-filter:blur(20px)}
-#upgrade-panel.open{right:0}
-.up-title{font-size:18px;color:#00ff88;letter-spacing:3px;margin-bottom:20px;text-transform:uppercase}
-.up-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s;position:relative}
-.up-item:hover{border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.03)}
-.up-item.maxed{opacity:.4;pointer-events:none}
-.up-item-name{font-size:13px;color:#fff;letter-spacing:1px;margin-bottom:6px}
-.up-item-desc{font-size:11px;color:rgba(255,255,255,.35);margin-bottom:8px}
-.up-item-cost{font-size:12px;color:#ffd700}
-.up-item-level{position:absolute;top:14px;right:14px;font-size:11px;color:#00ff88}
-.up-bar{width:100%;height:3px;background:rgba(255,255,255,.06);margin-top:6px}
-.up-bar-fill{height:100%;background:#00ff88;transition:width .3s}
-
-#mobile-controls{display:none;position:fixed;bottom:0;left:0;right:0;height:140px;z-index:15;pointer-events:none}
-.mobile-zone{position:absolute;bottom:0;height:100%;pointer-events:all;opacity:.05;background:#fff}
-.mobile-zone.left{left:0;width:50%}
-.mobile-zone.right{right:0;width:50%}
+#goalFx{position:fixed;inset:0;pointer-events:none;z-index:15;opacity:0;transition:opacity .15s}
+#goalFx.show{opacity:1}
 
 @media(max-width:768px){
-  #upgrade-panel{width:100%;right:-100%}
-  #mobile-controls{display:block}
+  #shopPanel{width:100%;right:-100%}
 }
-
-.menu-overlay{position:fixed;inset:0;background:rgba(10,10,15,.8);z-index:50;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-.menu-overlay.show{display:flex}
-.menu-box{text-align:center}
-.menu-box h2{font-size:32px;color:#fff;margin-bottom:10px;letter-spacing:4px}
-.menu-box p{font-size:14px;color:rgba(255,255,255,.4);margin-bottom:30px}
-.menu-btn{background:none;border:1px solid #00ff88;color:#00ff88;padding:12px 36px;font-family:inherit;font-size:14px;letter-spacing:2px;cursor:pointer;transition:all .3s;margin:0 6px}
-.menu-btn:hover{background:#00ff88;color:#0a0a0f}
-.menu-btn.gold{border-color:#ffd700;color:#ffd700}
-.menu-btn.gold:hover{background:#ffd700;color:#0a0a0f}
 </style>
 </head>
 <body>
 
 <div id="vignette" class="vignette"></div>
 <div id="scanline" class="scanline"></div>
+<div id="goalFx"></div>
 
-<div id="splash">
+<div id="splash" class="overlay show">
   <div class="egl-container">
-    <div class="egl-line">
-      <span class="egl-letter E">E</span>
-      <div class="egl-sub"><span class="egl-sub-line"></span><span class="egl-meaning">egorenchikxxer</span></div>
-    </div>
-    <div class="egl-line">
-      <span class="egl-letter G">G</span>
-      <div class="egl-sub"><span class="egl-sub-line"></span><span class="egl-meaning">gliter</span></div>
-    </div>
-    <div class="egl-line">
-      <span class="egl-letter L">L</span>
-      <div class="egl-sub"><span class="egl-sub-line"></span><span class="egl-meaning">lab</span></div>
-    </div>
+    <div class="egl-line"><span class="egl-letter">E</span><div class="egl-sub"><span class="egl-sub-line"></span><span class="egl-meaning">egorenchikxxer</span></div></div>
+    <div class="egl-line"><span class="egl-letter">G</span><div class="egl-sub"><span class="egl-sub-line"></span><span class="egl-meaning">gliter</span></div></div>
+    <div class="egl-line"><span class="egl-letter">L</span><div class="egl-sub"><span class="egl-sub-line"></span><span class="egl-meaning">lab</span></div></div>
   </div>
   <div class="cmd-line" id="cmdLine"><span class="cmd-text"></span><span class="cursor"></span></div>
 </div>
 
-<div id="game">
-  <canvas id="c"></canvas>
-</div>
-
-<div id="hud">
-  <div class="hud-score">SCORE <span id="scoreVal">0</span> : <span id="scoreVal2" style="color:#ff4488">0</span></div>
-  <div style="display:flex;gap:12px;align-items:center">
-    <div class="hud-coins" id="coinsVal">0</div>
-    <button id="pause-btn" onclick="toggleUpgrades()">UPGRADES</button>
-  </div>
-</div>
-
-<div id="upgrade-panel">
-  <div class="up-title">// upgrades</div>
-  <div id="upgrades-list"></div>
-</div>
-
-<div id="pauseMenu" class="menu-overlay">
-  <div class="menu-box">
-    <h2>PAUSED</h2>
-    <p>take a breather</p>
-    <button class="menu-btn" onclick="toggleUpgrades()">RESUME</button>
-  </div>
-</div>
-
-<div id="startMenu" class="menu-overlay show">
-  <div class="menu-box">
+<div id="loginScreen" class="overlay">
+  <div class="login-box">
     <h2>EGL HOCKEY</h2>
-    <p>minimalist. fast. yours.</p>
-    <button class="menu-btn" onclick="startGame()">PLAY</button>
-    <button class="menu-btn gold" onclick="toggleUpgrades()">SHOP</button>
+    <p>enter credentials to continue</p>
+    <input class="login-input" id="loginUser" placeholder="login" autocomplete="off">
+    <input class="login-input" id="loginPass" type="password" placeholder="password" autocomplete="off">
+    <button class="login-btn" id="loginBtn">LOGIN</button>
+    <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
-<div id="winMenu" class="menu-overlay">
-  <div class="menu-box">
-    <h2 id="winTitle">YOU WIN</h2>
-    <p id="winSub">dominance.</p>
-    <button class="menu-btn" onclick="startGame()">REMATCH</button>
-    <button class="menu-btn gold" onclick="showStart()">MENU</button>
-  </div>
+<div id="searchScreen" class="overlay">
+  <div class="search-title">SEARCHING FOR MATCH</div>
+  <div class="search-spinner"></div>
+  <div class="search-status">finding opponent<span class="search-dots"></span></div>
 </div>
 
-<div id="mobile-controls">
-  <div class="mobile-zone left" id="ml"></div>
-  <div class="mobile-zone right" id="mr"></div>
+<div id="menuScreen" class="overlay">
+  <div class="menu-title">EGL HOCKEY</div>
+  <div class="menu-sub">push the puck. score goals.</div>
+  <button class="menu-btn" id="btnPlay">PLAY</button>
+  <button class="menu-btn" id="btnShop">SHOP</button>
+</div>
+
+<div id="resultScreen" class="overlay">
+  <div class="result-title" id="resultTitle">YOU WIN</div>
+  <div class="result-sub" id="resultSub">dominance.</div>
+  <div class="result-reward" id="resultReward">+50 coins</div>
+  <button class="menu-btn" id="btnRematch">REMATCH</button>
+  <button class="menu-btn" id="btnBackMenu">MENU</button>
+</div>
+
+<div id="shopPanel">
+  <div class="shop-header">
+    <div class="shop-title">// SHOP</div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="shop-coins" id="shopCoins">$ 0</div>
+      <button class="shop-close" id="shopClose">&times;</button>
+    </div>
+  </div>
+  <div id="shopList"></div>
+</div>
+
+<div id="gameCanvas"><canvas id="c"></canvas></div>
+<div id="hud">
+  <div class="hud-score"><span class="me" id="hMe">0</span><span class="sep">:</span><span class="en" id="hEn">0</span></div>
+  <button class="hud-shop" id="hudShop">SHOP</button>
 </div>
 
 <script>
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 let W,H;
-
 function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
 window.addEventListener('resize',resize);resize();
 
-// SPLASH
-const commands=['git push --force','sudo rm -rf /','npm run dev','docker kill $(pidof god)','curl localhost:3000 | jq','.exit','kill -9 1','make it work','git blame'];
-let cmdIdx=0,charIdx=0,typeInterval;
-
-function splash(){
-  const lines=document.querySelectorAll('.egl-line');
-  lines.forEach((r,i)=>{
-    setTimeout(()=>r.classList.add('show'),500+i*800);
-  });
-  setTimeout(()=>{
-    document.querySelector('.cmd-line').classList.add('show');
-    document.querySelector('.scanline').classList.add('show');
-    typeCmd();
-  },3200);
-}
-
-function typeCmd(){
-  const textEl=document.querySelector('.cmd-text');
-  const cmd=commands[cmdIdx];
-  if(charIdx<=cmd.length){
-    textEl.textContent='$ '+cmd.substring(0,charIdx);
-    charIdx++;
-    typeInterval=setTimeout(typeCmd,60+Math.random()*40);
-  }else{
-    setTimeout(()=>{
-      charIdx=0;
-      cmdIdx=(cmdIdx+1)%commands.length;
-      textEl.textContent='';
-      typeCmd();
-    },2500);
-  }
-}
-
-setTimeout(splash,300);
-
-setTimeout(()=>{
-  document.getElementById('splash').classList.add('hide');
-  setTimeout(()=>{document.getElementById('splash').style.display='none'},1100);
-},7000);
-
-// GAME STATE
-let state='menu';
-let score1=0,score2=0;
+let state='splash';
+let playerLogin='';
 let coins=parseInt(localStorage.getItem('egl_coins')||'0');
-const WIN_SCORE=7;
-
-const upgrades={
-  paddle:{name:'Paddle Speed',desc:'Move your paddle faster',max:5,cost:[50,120,250,500,1000],level:0},
-  paddleSize:{name:'Paddle Size',desc:'Wider paddle',max:5,cost:[40,100,200,400,800],level:0},
-  puckSpeed:{name:'Puck Power',desc:'Faster puck on hit',max:5,cost:[60,150,300,600,1200],level:0},
-  goalSize:{name:'Goal Defense',desc:'Smaller opponent goal',max:5,cost:[80,200,400,800,1600],level:0},
-  magnet:{name:'Magnet',desc:'Puck curves toward goal',max:3,cost:[300,700,1500],level:0}
-};
-
-Object.keys(upgrades).forEach(k=>{
-  const saved=parseInt(localStorage.getItem('egl_up_'+k)||'0');
-  upgrades[k].level=saved;
-});
-
-function saveCoins(){localStorage.setItem('egl_coins',coins)}
-function saveUpgrades(){Object.keys(upgrades).forEach(k=>localStorage.setItem('egl_up_'+k,upgrades[k].level))}
-
-// PADDLES & PUCK
-const GOAL_W=12;
-let paddleH,paddleW,puckR,goalH;
-
-function initSizes(){
-  paddleH=Math.max(60,H*0.15);
-  paddleW=14;
-  puckR=10;
-  goalH=Math.max(80,H*0.2);
-}
-initSizes();
-
-const paddle1={x:0,y:H/2,h:paddleH,w:paddleW,vy:0};
-const paddle2={x:0,y:H/2,h:paddleH,w:paddleW,vy:0};
-const puck={x:0,y:H/2,vx:0,vy:0,r:puckR,trail:[]};
-
-let p1Scored=0,p2Scored=0;
+let scoreMe=0,scoreEn=0;
+const WIN_SCORE=5;
 let goalFlash=0;
 let particles=[];
 
+const upgrades={
+  speed:{name:'Speed',desc:'Move your circle faster',max:5,cost:[30,80,180,400,800],level:0},
+  size:{name:'Size',desc:'Bigger circle = more push force',max:5,cost:[40,100,220,450,900],level:0},
+  push:{name:'Push Power',desc:'Hit puck harder',max:5,cost:[50,120,260,520,1000],level:0},
+  goal:{name:'Goal Size',desc:'Smaller goal = harder to score on you',max:5,cost:[60,150,320,640,1200],level:0}
+};
+Object.keys(upgrades).forEach(k=>{upgrades[k].level=parseInt(localStorage.getItem('egl_up_'+k)||'0')});
+function save(){localStorage.setItem('egl_coins',coins);Object.keys(upgrades).forEach(k=>localStorage.setItem('egl_up_'+k,upgrades[k].level))}
+
+const PUCK={x:0,y:0,vx:0,vy:0,r:8,trail:[]};
+const player={x:0,y:0,vx:0,vy:0};
+const enemy={x:0,y:0,vx:0,vy:0};
 const keys={};
-window.addEventListener('keydown',e=>{keys[e.key]=true;if(e.key==='Escape')toggleUpgrades()});
+window.addEventListener('keydown',e=>{keys[e.key]=true});
 window.addEventListener('keyup',e=>{keys[e.key]=false});
 
-let touchUp=false,touchDown=false;
-document.getElementById('ml').addEventListener('touchstart',e=>{e.preventDefault();touchUp=true});
-document.getElementById('ml').addEventListener('touchend',()=>touchUp=false);
-document.getElementById('mr').addEventListener('touchstart',e=>{e.preventDefault();touchDown=true});
-document.getElementById('mr').addEventListener('touchend',()=>touchDown=false);
+let mouseX=W/2,mouseY=H/2;
+let useMouse=false;
+canvas.addEventListener('mousedown',()=>{useMouse=true});
+canvas.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY});
 
-function resetPositions(){
-  initSizes();
-  paddle1.x=40;paddle1.y=H/2;paddle1.h=paddleH;
-  paddle2.x=W-40-paddleW;paddle2.y=H/2;paddle2.h=paddleH;
-  puck.x=W/2;puck.y=H/2;
-  const angle=(Math.random()-.5)*Math.PI*.5;
-  const dir=Math.random()>.5?1:-1;
-  const spd=4+Math.min(upgrades.paddle.level,3);
-  puck.vx=Math.cos(angle)*spd*dir;
-  puck.vy=Math.sin(angle)*spd;
-  puck.trail=[];
+function circleRadius(){return 28+upgrades.size.level*4}
+function playerSpeed(){return 4+upgrades.speed.level*0.8}
+function enemyRadius(){return 28}
+function goalSize(){return Math.max(60,H*0.22)-upgrades.goal.level*10}
+
+function show(id){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));document.getElementById(id).classList.add('show')}
+
+// SPLASH
+const commands=['git push --force','npm run dev','make it work','git blame','kill -9 1'];
+let cmdIdx=0,charIdx=0;
+function typeCmd(){
+  const el=document.querySelector('.cmd-text');
+  const c=commands[cmdIdx];
+  if(charIdx<=c.length){el.textContent='$ '+c.substring(0,charIdx);charIdx++;setTimeout(typeCmd,55+Math.random()*35)}
+  else{setTimeout(()=>{charIdx=0;cmdIdx=(cmdIdx+1)%commands.length;el.textContent='';typeCmd()},2200)}
+}
+setTimeout(()=>{
+  const lines=document.querySelectorAll('.egl-line');
+  lines.forEach((l,i)=>setTimeout(()=>l.classList.add('show'),400+i*700));
+  setTimeout(()=>{document.querySelector('.cmd-line').classList.add('show');document.querySelector('.scanline').classList.add('show');typeCmd()},2800);
+  setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>show('loginScreen'),800)},6500);
+},200);
+
+// LOGIN
+document.getElementById('loginBtn').onclick=doLogin;
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus()});
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value.trim();
+  if(!u||!p){document.getElementById('loginErr').textContent='fill in all fields';return}
+  if(u.length<1||p.length<1){document.getElementById('loginErr').textContent='too short';return}
+  playerLogin=u;
+  document.getElementById('menuScreen').querySelector('.menu-title').textContent='EGL HOCKEY';
+  document.getElementById('menuScreen').querySelector('.menu-sub').textContent='welcome, '+u;
+  showSearch();
+}
+function showSearch(){
+  show('searchScreen');
+  const dur=1500+Math.random()*2000;
+  setTimeout(()=>{show('menuScreen')},dur);
 }
 
-function spawnParticles(x,y,color,count){
-  for(let i=0;i<count;i++){
-    particles.push({
-      x,y,
-      vx:(Math.random()-.5)*8,
-      vy:(Math.random()-.5)*8,
-      life:1,
-      decay:.02+Math.random()*.03,
-      color,
-      size:2+Math.random()*3
-    });
-  }
+// MENU
+document.getElementById('btnPlay').onclick=()=>startRound();
+document.getElementById('btnShop').onclick=()=>toggleShop();
+document.getElementById('btnRematch').onclick=()=>showSearch();
+document.getElementById('btnBackMenu').onclick=()=>show('menuScreen');
+document.getElementById('hudShop').onclick=()=>toggleShop();
+document.getElementById('shopClose').onclick=()=>toggleShop();
+
+function toggleShop(){
+  const p=document.getElementById('shopPanel');
+  p.classList.toggle('open');
+  if(p.classList.contains('open'))renderShop();
+}
+
+function renderShop(){
+  document.getElementById('shopCoins').textContent='$ '+coins;
+  const list=document.getElementById('shopList');
+  list.innerHTML='';
+  Object.keys(upgrades).forEach(k=>{
+    const u=upgrades[k];const lv=u.level;const maxed=lv>=u.max;const cost=maxed?0:u.cost[lv];const can=coins>=cost&&!maxed;
+    const d=document.createElement('div');
+    d.className='up-item'+(maxed?' maxed':'');
+    d.innerHTML=`<div class="up-name">${u.name}</div><div class="up-desc">${u.desc}</div><div class="up-bottom"><div class="up-cost">${maxed?'MAX':cost+' coins'}</div><div class="up-lv">LV ${lv}/${u.max}</div></div><div class="up-bar"><div class="up-bar-fill" style="width:${(lv/u.max)*100}%"></div></div>`;
+    if(can)d.onclick=()=>{coins-=cost;u.level++;save();renderShop()};
+    list.appendChild(d);
+  });
+}
+
+// GAME
+function startRound(){
+  scoreMe=0;scoreEn=0;goalFlash=0;particles=[];
+  document.getElementById('hMe').textContent='0';
+  document.getElementById('hEn').textContent='0';
+  state='playing';
+  document.getElementById('gameCanvas').style.display='block';
+  document.getElementById('hud').classList.add('show');
+  document.getElementById('shopPanel').classList.remove('open');
+  show('gameCanvas');
+  document.getElementById('gameCanvas').style.display='block';
+  document.getElementById('hud').style.display='flex';
+  resetPositions();
+}
+
+function resetPositions(){
+  const r=circleRadius();
+  player.x=W*0.28;player.y=H/2;player.vx=0;player.vy=0;
+  enemy.x=W*0.72;enemy.y=H/2;enemy.vx=0;enemy.vy=0;
+  PUCK.x=W/2;PUCK.y=H/2;
+  const a=(Math.random()-.5)*Math.PI*.4;
+  const d=Math.random()>.5?1:-1;
+  const sp=3;
+  PUCK.vx=Math.cos(a)*sp*d;PUCK.vy=Math.sin(a)*sp;
+  PUCK.trail=[];
+}
+
+function spawnParticles(x,y,count){
+  for(let i=0;i<count;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:1,decay:.02+Math.random()*.03,size:1.5+Math.random()*2.5});
+}
+
+function circleCollide(ax,ay,ar,bx,by,br){
+  const dx=ax-bx,dy=ay-by,d=Math.sqrt(dx*dx+dy*dy);
+  return d<ar+br;
+}
+
+function pushCircle(cx,cy,cr,px,py,ppower){
+  const dx=px-cx,dy=py-cy,d=Math.sqrt(dx*dx+dy*dy)||1;
+  const nx=dx/d,ny=dy/d;
+  return{vx:nx*ppower,vy:ny*ppower};
 }
 
 function update(){
   if(state!=='playing')return;
+  const r=circleRadius();
+  const spd=playerSpeed();
+  const espd=3+upgrades.speed.level*0.4;
 
-  const p1Speed=5+upgrades.paddle.level*1.2;
-  const p1Size=paddleH+upgrades.paddleSize.level*12;
+  // Player input
+  if(useMouse){
+    const dx=mouseX-player.x,dy=mouseY-player.y;
+    const d=Math.sqrt(dx*dx+dy*dy);
+    if(d>2){player.vx=(dx/d)*spd;player.vy=(dy/d)*spd}
+    else{player.vx*=.8;player.vy*=.8}
+  }else{
+    if(keys['w']||keys['ArrowUp'])player.vy=-spd;
+    else if(keys['s']||keys['ArrowDown'])player.vy=spd;
+    else player.vy*=.82;
+    if(keys['a']||keys['ArrowLeft'])player.vx=-spd;
+    else if(keys['d']||keys['ArrowRight'])player.vx=spd;
+    else player.vx*=.82;
+  }
+  player.x+=player.vx;player.y+=player.vy;
+  player.x=Math.max(r,Math.min(W-r,player.x));
+  player.y=Math.max(r,Math.min(H-r,player.y));
 
-  // Paddle 1 (W/S or touch)
-  if(keys['w']||keys['ArrowUp']||touchUp)paddle1.vy=-p1Speed;
-  else if(keys['s']||keys['ArrowDown']||touchDown)paddle1.vy=p1Speed;
-  else paddle1.vy*=.85;
+  // Enemy AI
+  let targetX=PUCK.x,targetY=PUCK.y;
+  const edx=PUCK.x-enemy.x,edy=PUCK.y-enemy.y;
+  const ed=Math.sqrt(edx*edx+edy*edy)||1;
+  // If puck is on enemy's side, chase it. If on player's side, go back to defend
+  if(PUCK.x>W*0.5){
+    const pushPower=2+upgrades.push.level*0.3;
+    enemy.vx+=(edx/ed)*0.12*espd;enemy.vy+=(edy/ed)*0.12*espd;
+  }else{
+    targetX=W*0.72;targetY=H/2;
+    const dx2=targetX-enemy.x,dy2=targetY-enemy.y;
+    enemy.vx+=dx2*0.03;enemy.vy+=dy2*0.03;
+  }
+  enemy.vx*=.88;enemy.vy*=.88;
+  const emax=espd*1.1;
+  if(Math.abs(enemy.vx)>emax)enemy.vx=Math.sign(enemy.vx)*emax;
+  if(Math.abs(enemy.vy)>emax)enemy.vy=Math.sign(enemy.vy)*emax;
+  enemy.x+=enemy.vx;enemy.y+=enemy.vy;
+  enemy.x=Math.max(enemyRadius(),Math.min(W-enemyRadius(),enemy.x));
+  enemy.y=Math.max(enemyRadius(),Math.min(H-enemyRadius(),enemy.y));
 
-  paddle1.y+=paddle1.vy;
-  paddle1.y=Math.max(p1Size/2,Math.min(H-p1Size/2,paddle1.y));
+  // Player-puck collision
+  if(circleCollide(player.x,player.y,r,PUCK.x,PUCK.y,PUCK.r)){
+    const pp=3+upgrades.push.level*1.2;
+    const push=pushCircle(player.x,player.y,r,PUCK.x,PUCK.y,pp);
+    PUCK.vx=push.vx;PUCK.vy=push.vy;
+    const dx=PUCK.x-player.x,dy=PUCK.y-player.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+    PUCK.x=player.x+(dx/d)*(r+PUCK.r+1);PUCK.y=player.y+(dy/d)*(r+PUCK.r+1);
+    spawnParticles(PUCK.x,PUCK.y,6);
+  }
 
-  // AI Paddle 2
-  const aiSpeed=3.5+upgrades.goalSize.level*.3;
-  const target=puck.y+(Math.random()-.5)*40;
-  const diff=target-paddle2.y;
-  paddle2.vy=diff*.06;
-  if(Math.abs(paddle2.vy)>aiSpeed)paddle2.vy=Math.sign(paddle2.vy)*aiSpeed;
-  paddle2.y+=paddle2.vy;
-  paddle2.y=Math.max(paddle2.h/2,Math.min(H-paddle2.h/2,paddle2.y));
+  // Enemy-puck collision
+  if(circleCollide(enemy.x,enemy.y,enemyRadius(),PUCK.x,PUCK.y,PUCK.r)){
+    const push=pushCircle(enemy.x,enemy.y,enemyRadius(),PUCK.x,PUCK.y,3.5);
+    PUCK.vx=push.vx;PUCK.vy=push.vy;
+    const dx=PUCK.x-enemy.x,dy=PUCK.y-enemy.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+    PUCK.x=enemy.x+(dx/d)*(enemyRadius()+PUCK.r+1);PUCK.y=enemy.y+(dy/d)*(enemyRadius()+PUCK.r+1);
+    spawnParticles(PUCK.x,PUCK.y,6);
+  }
 
   // Puck movement
-  puck.x+=puck.vx;
-  puck.y+=puck.vy;
-  puck.trail.push({x:puck.x,y:puck.y});
-  if(puck.trail.length>12)puck.trail.shift();
+  PUCK.x+=PUCK.vx;PUCK.y+=PUCK.vy;
+  PUCK.vx*=.999;PUCK.vy*=.999;
+  PUCK.trail.push({x:PUCK.x,y:PUCK.y});
+  if(PUCK.trail.length>10)PUCK.trail.shift();
 
-  // Magnet effect
-  if(upgrades.magnet.level>0){
-    const magnetStr=upgrades.magnet.level*0.03;
-    puck.vy+=(puck.vx>0?-1:1)*magnetStr*(puck.y>H/2?.3:-.3);
+  // Wall bounce
+  if(PUCK.y-PUCK.r<0){PUCK.y=PUCK.r;PUCK.vy*=-1}
+  if(PUCK.y+PUCK.r>H){PUCK.y=H-PUCK.r;PUCK.vy*=-1}
+
+  // Goals
+  const gs=goalSize();
+  const gY=H/2-gs/2;
+
+  // Player goal (left side) - puck enters = enemy scores
+  if(PUCK.x-PUCK.r<10){
+    if(PUCK.y>gY&&PUCK.y<gY+gs){
+      scoreEn++;document.getElementById('hEn').textContent=scoreEn;
+      goalFlash=1;document.getElementById('goalFx').style.background='rgba(255,80,80,.12)';
+      document.getElementById('goalFx').classList.add('show');
+      setTimeout(()=>document.getElementById('goalFx').classList.remove('show'),200);
+      spawnParticles(10,PUCK.y,20);
+      resetPositions();return;
+    }else{PUCK.x=10+PUCK.r;PUCK.vx*=-.8}
   }
 
-  // Wall bounce top/bottom
-  if(puck.y-puck.r<0){puck.y=puck.r;puck.vy*=-1}
-  if(puck.y+puck.r>H){puck.y=H-puck.r;puck.vy*=-1}
-
-  // Paddle collision 1
-  if(puck.vx<0){
-    const py=paddle1.y-p1Size/2;
-    if(puck.x-puck.r<paddle1.x+paddle1.w&&puck.x+puck.r>paddle1.x&&puck.y>py&&puck.y<py+p1Size){
-      const hitPos=(puck.y-paddle1.y)/(p1Size/2);
-      const spd=6+upgrades.puckSpeed.level*1.5;
-      puck.vx=spd;
-      puck.vy=hitPos*5;
-      puck.x=paddle1.x+paddle1.w+puck.r;
-      spawnParticles(puck.x,puck.y,'#00ff88',8);
-    }
-  }
-
-  // Paddle collision 2
-  if(puck.vx>0){
-    const py=paddle2.y-paddle2.h/2;
-    if(puck.x+puck.r>paddle2.x&&puck.x-puck.r<paddle2.x+paddle2.w&&puck.y>py&&puck.y<py+paddle2.h){
-      const hitPos=(puck.y-paddle2.y)/(paddle2.h/2);
-      puck.vx=-(5+Math.random()*2);
-      puck.vy=hitPos*5;
-      puck.x=paddle2.x-puck.r;
-      spawnParticles(puck.x,puck.y,'#ff4488',8);
-    }
-  }
-
-  // Scoring
-  const gH=goalH+upgrades.goalSize.level*10;
-  if(puck.x-puck.r<GOAL_W){
-    const inGoal=puck.y>H/2-gH/2&&puck.y<H/2+gH/2;
-    if(inGoal){
-      p2Scored++;
-      goalFlash=1;
-      spawnParticles(GOAL_W,H/2,'#ff4488',25);
-      coins+=10;saveCoins();
-      resetPositions();
-    }else{
-      puck.x=GOAL_W+puck.r;puck.vx*=-1;
-      spawnParticles(GOAL_W,puck.y,'rgba(255,255,255,.3)',5);
-    }
-  }
-  if(puck.x+puck.r>W-GOAL_W){
-    const inGoal=puck.y>H/2-gH/2&&puck.y<H/2+gH/2;
-    if(inGoal){
-      p1Scored++;
-      goalFlash=1;
-      spawnParticles(W-GOAL_W,H/2,'#00ff88',25);
-      coins+=25;saveCoins();
-      resetPositions();
-    }else{
-      puck.x=W-GOAL_W-puck.r;puck.vx*=-1;
-      spawnParticles(W-GOAL_W,puck.y,'rgba(255,255,255,.3)',5);
-    }
+  // Enemy goal (right side) - puck enters = player scores
+  if(PUCK.x+PUCK.r>W-10){
+    if(PUCK.y>gY&&PUCK.y<gY+gs){
+      scoreMe++;document.getElementById('hMe').textContent=scoreMe;
+      goalFlash=1;document.getElementById('goalFx').style.background='rgba(255,255,255,.08)';
+      document.getElementById('goalFx').classList.add('show');
+      setTimeout(()=>document.getElementById('goalFx').classList.remove('show'),200);
+      coins+=15;save();
+      spawnParticles(W-10,PUCK.y,20);
+      resetPositions();return;
+    }else{PUCK.x=W-10-PUCK.r;PUCK.vx*=-.8}
   }
 
   // Particles
-  particles.forEach(p=>{
-    p.x+=p.vx;p.y+=p.vy;
-    p.vx*=.96;p.vy*=.96;
-    p.life-=p.decay;
-  });
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vx*=.95;p.vy*=.95;p.life-=p.decay});
   particles=particles.filter(p=>p.life>0);
-
   if(goalFlash>0)goalFlash-=.04;
 
-  // Update HUD
-  document.getElementById('scoreVal').textContent=p1Scored;
-  document.getElementById('scoreVal2').textContent=p2Scored;
-  document.getElementById('coinsVal').textContent=coins;
-
-  // Win check
-  if(p1Scored>=WIN_SCORE)endGame(true);
-  if(p2Scored>=WIN_SCORE)endGame(false);
+  // Win
+  if(scoreMe>=WIN_SCORE)endRound(true);
+  if(scoreEn>=WIN_SCORE)endRound(false);
 }
 
 function draw(){
   ctx.fillStyle='#0a0a0f';
   ctx.fillRect(0,0,W,H);
 
-  // Field lines
-  ctx.strokeStyle='rgba(255,255,255,.04)';
-  ctx.lineWidth=1;
-  ctx.beginPath();
-  ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(W/2,H/2,60,0,Math.PI*2);
-  ctx.stroke();
+  // Center line & circle
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
+  ctx.beginPath();ctx.arc(W/2,H/2,50,0,Math.PI*2);ctx.stroke();
 
   // Goals
-  const gH=goalH+upgrades.goalSize.level*10;
-  const gY=H/2-gH/2;
-
-  // Goal glow
-  if(goalFlash>0){
-    const grd=ctx.createLinearGradient(0,gY,GOAL_W,gY);
-    grd.addColorStop(0,`rgba(255,68,136,${goalFlash*.3})`);
-    grd.addColorStop(1,'transparent');
-    ctx.fillStyle=grd;
-    ctx.fillRect(0,gY,60,gH);
-
-    const grd2=ctx.createLinearGradient(W,gY,W-GOAL_W,gY);
-    grd2.addColorStop(0,`rgba(0,255,136,${goalFlash*.3})`);
-    grd2.addColorStop(1,'transparent');
-    ctx.fillStyle=grd2;
-    ctx.fillRect(W-60,gY,60,gH);
-  }
-
-  ctx.strokeStyle='rgba(255,68,136,.3)';
-  ctx.lineWidth=2;
-  ctx.strokeRect(0,gY,GOAL_W,gH);
-
-  ctx.strokeStyle='rgba(0,255,136,.3)';
-  ctx.strokeRect(W-GOAL_W,gY,GOAL_W,gH);
+  const gs=goalSize();const gY=H/2-gs/2;
+  ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=2;
+  ctx.strokeRect(0,gY,10,gs);
+  ctx.strokeRect(W-10,gY,10,gs);
 
   // Puck trail
-  puck.trail.forEach((t,i)=>{
-    const alpha=(i/puck.trail.length)*0.3;
-    const size=puck.r*(i/puck.trail.length);
-    ctx.beginPath();
-    ctx.arc(t.x,t.y,size,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,255,255,${alpha})`;
-    ctx.fill();
+  PUCK.trail.forEach((t,i)=>{
+    const a=(i/PUCK.trail.length)*.25;const s=PUCK.r*(i/PUCK.trail.length);
+    ctx.beginPath();ctx.arc(t.x,t.y,s,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${a})`;ctx.fill();
   });
 
   // Puck
-  ctx.beginPath();
-  ctx.arc(puck.x,puck.y,puck.r,0,Math.PI*2);
-  ctx.fillStyle='#fff';
-  ctx.fill();
-  ctx.shadowColor='#fff';
-  ctx.shadowBlur=15;
-  ctx.fill();
-  ctx.shadowBlur=0;
+  ctx.beginPath();ctx.arc(PUCK.x,PUCK.y,PUCK.r,0,Math.PI*2);
+  ctx.fillStyle='#fff';ctx.shadowColor='#fff';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
 
-  // Paddle 1
-  const p1Size=paddleH+upgrades.paddleSize.level*12;
-  const p1Y=paddle1.y-p1Size/2;
-  ctx.fillStyle='#00ff88';
-  ctx.shadowColor='#00ff88';
-  ctx.shadowBlur=10;
-  ctx.fillRect(paddle1.x,p1Y,paddle1.w,p1Size);
-  ctx.shadowBlur=0;
+  // Player circle
+  const pr=circleRadius();
+  ctx.beginPath();ctx.arc(player.x,player.y,pr,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.06)';ctx.fill();
+  ctx.beginPath();ctx.arc(player.x,player.y,3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.7)';ctx.fill();
 
-  // Paddle 2
-  ctx.fillStyle='#ff4488';
-  ctx.shadowColor='#ff4488';
-  ctx.shadowBlur=10;
-  ctx.fillRect(paddle2.x,paddle2.y-paddle2.h/2,paddle2.w,paddle2.h);
-  ctx.shadowBlur=0;
+  // Enemy circle
+  const er=enemyRadius();
+  ctx.beginPath();ctx.arc(enemy.x,enemy.y,er,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.03)';ctx.fill();
+  ctx.beginPath();ctx.arc(enemy.x,enemy.y,3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.35)';ctx.fill();
 
   // Particles
   particles.forEach(p=>{
-    ctx.globalAlpha=p.life;
-    ctx.fillStyle=p.color;
+    ctx.globalAlpha=p.life;ctx.fillStyle='rgba(255,255,255,.8)';
     ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size);
   });
   ctx.globalAlpha=1;
 }
 
-function gameLoop(){
-  update();
-  draw();
-  requestAnimationFrame(gameLoop);
-}
-
-function startGame(){
-  score1=0;score2=0;p1Scored=0;p2Scored=0;
-  initSizes();
-  resetPositions();
-  state='playing';
-  hideAllMenus();
-  document.getElementById('hud').classList.add('show');
-  document.getElementById('upgrade-panel').classList.remove('open');
-}
-
-function endGame(won){
+function endRound(won){
   state='menu';
-  document.getElementById('hud').classList.remove('show');
-  document.getElementById('winTitle').textContent=won?'YOU WIN':'YOU LOSE';
-  document.getElementById('winSub').textContent=won?'+50 coins earned':'almost.';
-  if(won){coins+=50;saveCoins()}
-  document.getElementById('winMenu').classList.add('show');
+  document.getElementById('hud').style.display='none';
+  document.getElementById('gameCanvas').style.display='none';
+  document.getElementById('resultTitle').textContent=won?'YOU WIN':'YOU LOSE';
+  document.getElementById('resultTitle').style.color=won?'rgba(255,255,255,.9)':'rgba(255,255,255,.4)';
+  document.getElementById('resultSub').textContent=won?scoreMe+' - '+scoreEn+'  dominance.':'you fought well.';
+  document.getElementById('resultReward').textContent=won?'+50 coins earned':'+15 coins earned';
+  if(won){coins+=50;save()}else{coins+=15;save()}
+  show('resultScreen');
 }
 
-function showStart(){
-  hideAllMenus();
-  state='menu';
-  document.getElementById('startMenu').classList.add('show');
-}
-
-function hideAllMenus(){
-  document.querySelectorAll('.menu-overlay').forEach(m=>m.classList.remove('show'));
-}
-
-function toggleUpgrades(){
-  const panel=document.getElementById('upgrade-panel');
-  panel.classList.toggle('open');
-  if(panel.classList.contains('open')){
-    state='paused';
-    hideAllMenus();
-    renderUpgrades();
-  }else{
-    if(state==='paused'&&p1Scored<WIN_SCORE&&p2Scored<WIN_SCORE)state='playing';
-    else showStart();
-  }
-}
-
-function renderUpgrades(){
-  const list=document.getElementById('upgrades-list');
-  list.innerHTML='';
-  Object.keys(upgrades).forEach(k=>{
-    const u=upgrades[k];
-    const lv=u.level;
-    const maxed=lv>=u.max;
-    const cost=maxed?0:u.cost[lv];
-    const canBuy=coins>=cost&&!maxed;
-    const pct=(lv/u.max)*100;
-
-    const div=document.createElement('div');
-    div.className='up-item'+(maxed?' maxed':'');
-    div.innerHTML=`
-      <div class="up-item-name">${u.name}</div>
-      <div class="up-item-desc">${u.desc}</div>
-      <div class="up-item-cost">${maxed?'MAXED':cost+' coins'}</div>
-      <div class="up-item-level">LV ${lv}/${u.max}</div>
-      <div class="up-bar"><div class="up-bar-fill" style="width:${pct}%"></div></div>
-    `;
-    if(canBuy){
-      div.onclick=()=>{
-        coins-=cost;
-        u.level++;
-        saveCoins();saveUpgrades();
-        renderUpgrades();
-        document.getElementById('coinsVal').textContent=coins;
-      };
-    }
-    list.appendChild(div);
-  });
-}
-
-renderUpgrades();
+function gameLoop(){update();draw();requestAnimationFrame(gameLoop)}
 gameLoop();
 </script>
 </body>
