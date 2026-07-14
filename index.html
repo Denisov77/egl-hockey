@@ -7,8 +7,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:'Courier New',monospace;color:#fff}
-
-.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:100;background:#0a0a0f}
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:100;background:#0a0a0f;flex-direction:column}
 .overlay.show{display:flex}
 
 #splash{z-index:1000;transition:opacity 1s}
@@ -31,36 +30,28 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
 @keyframes blink{50%{opacity:0}}
 .scanline{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);z-index:1001;opacity:0;transition:opacity 1s 2s}
 .scanline.show{opacity:1}
-.vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.6) 100%);z-index:999}
 
-#loginScreen{flex-direction:column;gap:20px}
-.login-box{text-align:center}
-.login-box h2{font-size:28px;letter-spacing:4px;margin-bottom:6px}
-.login-box p{font-size:12px;color:rgba(255,255,255,.3);margin-bottom:30px;letter-spacing:2px}
-.login-input{display:block;width:260px;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:13px;letter-spacing:1px;margin:0 auto 12px;outline:none;transition:border-color .2s}
-.login-input:focus{border-color:rgba(255,255,255,.3)}
-.login-input::placeholder{color:rgba(255,255,255,.2)}
-.login-btn{width:260px;padding:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-family:inherit;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s}
-.login-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
-.login-err{font-size:11px;color:rgba(255,80,80,.7);height:16px;letter-spacing:1px}
+.box{text-align:center}
+.box h2{font-size:28px;letter-spacing:4px;margin-bottom:6px}
+.box p{font-size:12px;color:rgba(255,255,255,.3);margin-bottom:24px;letter-spacing:2px}
+.inp{display:block;width:260px;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#fff;font-family:inherit;font-size:13px;letter-spacing:1px;margin:0 auto 12px;outline:none;transition:border-color .2s}
+.inp:focus{border-color:rgba(255,255,255,.3)}
+.inp::placeholder{color:rgba(255,255,255,.2)}
+.btn{display:block;width:260px;padding:10px;margin:0 auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-family:inherit;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s}
+.btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+.btn-sm{display:inline-block;width:auto;padding:10px 24px;margin:0 4px}
+.err{font-size:11px;color:rgba(255,80,80,.7);height:16px;letter-spacing:1px;margin-top:4px}
 
-#searchScreen{flex-direction:column;gap:20px;text-align:center}
-.search-title{font-size:18px;letter-spacing:3px;color:rgba(255,255,255,.6)}
-.search-spinner{width:50px;height:50px;border:2px solid rgba(255,255,255,.08);border-top-color:rgba(255,255,255,.4);border-radius:50%;animation:spin .8s linear infinite;margin:10px auto}
+.spinner{width:50px;height:50px;border:2px solid rgba(255,255,255,.08);border-top-color:rgba(255,255,255,.4);border-radius:50%;animation:spin .8s linear infinite;margin:20px auto}
 @keyframes spin{to{transform:rotate(360deg)}}
-.search-status{font-size:12px;color:rgba(255,255,255,.3);letter-spacing:1px}
-.search-dots::after{content:'';animation:dots 1.5s steps(4,end) infinite}
-@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
 
-#menuScreen{flex-direction:column;gap:0}
 .menu-title{font-size:clamp(32px,6vw,52px);font-weight:900;letter-spacing:6px;margin-bottom:4px}
 .menu-sub{font-size:12px;color:rgba(255,255,255,.25);letter-spacing:3px;margin-bottom:40px}
-.menu-btn{display:block;width:200px;padding:12px;margin:6px auto;background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-family:inherit;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s}
-.menu-btn:hover{border-color:rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.04)}
+.btn-menu{display:block;width:200px;padding:12px;margin:6px auto;background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-family:inherit;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s}
+.btn-menu:hover{border-color:rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.04)}
 
-#resultScreen{flex-direction:column;gap:10px;text-align:center}
-.result-title{font-size:36px;font-weight:900;letter-spacing:4px}
-.result-sub{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:20px;letter-spacing:1px}
+.result-title{font-size:36px;font-weight:900;letter-spacing:4px;margin-bottom:8px}
+.result-sub{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:8px;letter-spacing:1px}
 .result-reward{font-size:14px;color:rgba(255,215,0,.7);margin-bottom:24px;letter-spacing:1px}
 
 #shopPanel{position:fixed;right:-360px;top:0;bottom:0;width:340px;background:rgba(10,10,15,.97);border-left:1px solid rgba(255,255,255,.06);z-index:200;transition:right .4s cubic-bezier(.22,1,.36,1);padding:24px;overflow-y:auto;backdrop-filter:blur(20px)}
@@ -81,29 +72,32 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
 .up-bar{width:100%;height:2px;background:rgba(255,255,255,.05);margin-top:8px}
 .up-bar-fill{height:100%;background:rgba(255,255,255,.3);transition:width .3s}
 
-#gameCanvas{display:none;position:fixed;inset:0;z-index:5}
+#gameWrap{display:none;position:fixed;inset:0;z-index:5;align-items:center;justify-content:center;background:#0a0a0f}
+canvas{display:block;border:1px solid rgba(255,255,255,.06)}
 #hud{position:fixed;top:0;left:0;right:0;padding:10px 20px;display:none;justify-content:space-between;align-items:center;z-index:10}
 #hud.show{display:flex}
+.hud-left{display:flex;align-items:center;gap:16px}
+.hud-names{font-size:11px;color:rgba(255,255,255,.25);letter-spacing:1px}
 .hud-score{font-size:22px;font-weight:700;letter-spacing:2px}
 .hud-score .me{color:rgba(255,255,255,.9)}
 .hud-score .sep{color:rgba(255,255,255,.15);margin:0 6px}
 .hud-score .en{color:rgba(255,255,255,.9)}
+.hud-btns{display:flex;gap:8px}
 .hud-shop{background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.4);padding:5px 12px;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:1px;transition:all .2s}
 .hud-shop:hover{border-color:rgba(255,255,255,.3);color:#fff}
-
 #goalFx{position:fixed;inset:0;pointer-events:none;z-index:15;opacity:0;transition:opacity .15s}
 #goalFx.show{opacity:1}
 
-@media(max-width:768px){
-  #shopPanel{width:100%;right:-100%}
-}
+#waitingBar{position:fixed;bottom:0;left:0;height:2px;background:rgba(255,255,255,.15);z-index:200;transition:width .3s;width:0}
+
+@media(max-width:768px){#shopPanel{width:100%;right:-100%}}
 </style>
 </head>
 <body>
 
-<div id="vignette" class="vignette"></div>
 <div id="scanline" class="scanline"></div>
 <div id="goalFx"></div>
+<div id="waitingBar"></div>
 
 <div id="splash" class="overlay show">
   <div class="egl-container">
@@ -115,35 +109,38 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
 </div>
 
 <div id="loginScreen" class="overlay">
-  <div class="login-box">
+  <div class="box">
     <h2>EGL HOCKEY</h2>
     <p>enter credentials to continue</p>
-    <input class="login-input" id="loginUser" placeholder="login" autocomplete="off">
-    <input class="login-input" id="loginPass" type="password" placeholder="password" autocomplete="off">
-    <button class="login-btn" id="loginBtn">LOGIN</button>
-    <div class="login-err" id="loginErr"></div>
+    <input class="inp" id="loginUser" placeholder="login" autocomplete="off">
+    <input class="inp" id="loginPass" type="password" placeholder="password" autocomplete="off">
+    <button class="btn" id="loginBtn">LOGIN</button>
+    <div class="err" id="loginErr"></div>
   </div>
 </div>
 
 <div id="searchScreen" class="overlay">
-  <div class="search-title">SEARCHING FOR MATCH</div>
-  <div class="search-spinner"></div>
-  <div class="search-status">finding opponent<span class="search-dots"></span></div>
+  <div class="box">
+    <p style="margin-bottom:20px">SEARCHING FOR MATCH</p>
+    <div class="spinner"></div>
+    <p style="font-size:11px;color:rgba(255,255,255,.2)">finding opponent</p>
+    <div style="margin-top:20px"><button class="btn" id="cancelSearch" style="width:auto;display:inline-block;padding:8px 24px">CANCEL</button></div>
+  </div>
 </div>
 
 <div id="menuScreen" class="overlay">
   <div class="menu-title">EGL HOCKEY</div>
-  <div class="menu-sub">push the puck. score goals.</div>
-  <button class="menu-btn" id="btnPlay">PLAY</button>
-  <button class="menu-btn" id="btnShop">SHOP</button>
+  <div class="menu-sub" id="welcomeMsg">push the puck. score goals.</div>
+  <button class="btn-menu" id="btnPlay">PLAY</button>
+  <button class="btn-menu" id="btnShop">SHOP</button>
 </div>
 
 <div id="resultScreen" class="overlay">
   <div class="result-title" id="resultTitle">YOU WIN</div>
-  <div class="result-sub" id="resultSub">dominance.</div>
-  <div class="result-reward" id="resultReward">+50 coins</div>
-  <button class="menu-btn" id="btnRematch">REMATCH</button>
-  <button class="menu-btn" id="btnBackMenu">MENU</button>
+  <div class="result-sub" id="resultSub"></div>
+  <div class="result-reward" id="resultReward"></div>
+  <button class="btn-menu" id="btnRematch">REMATCH</button>
+  <button class="btn-menu" id="btnBackMenu">MENU</button>
 </div>
 
 <div id="shopPanel">
@@ -157,53 +154,54 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
   <div id="shopList"></div>
 </div>
 
-<div id="gameCanvas"><canvas id="c"></canvas></div>
+<div id="gameWrap"><canvas id="c"></canvas></div>
 <div id="hud">
-  <div class="hud-score"><span class="me" id="hMe">0</span><span class="sep">:</span><span class="en" id="hEn">0</span></div>
-  <button class="hud-shop" id="hudShop">SHOP</button>
+  <div class="hud-left">
+    <div class="hud-score"><span class="me" id="hMe">0</span><span class="sep">:</span><span class="en" id="hEn">0</span></div>
+    <div class="hud-names" id="hudNames"></div>
+  </div>
+  <div class="hud-btns">
+    <button class="hud-shop" id="hudShop">SHOP</button>
+    <button class="hud-shop" id="hudLeave">LEAVE</button>
+  </div>
 </div>
 
 <script>
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
-let W,H;
-function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
-window.addEventListener('resize',resize);resize();
+let W=900,H=500;
+canvas.width=W;canvas.height=H;
 
 let state='splash';
 let playerLogin='';
+let mySide=0;
 let coins=parseInt(localStorage.getItem('egl_coins')||'0');
-let scoreMe=0,scoreEn=0;
-const WIN_SCORE=5;
-let goalFlash=0;
-let particles=[];
+let ws=null;
+let lastState=null;
+let opponentName='';
 
 const upgrades={
   speed:{name:'Speed',desc:'Move your circle faster',max:5,cost:[30,80,180,400,800],level:0},
-  size:{name:'Size',desc:'Bigger circle = more push force',max:5,cost:[40,100,220,450,900],level:0},
-  push:{name:'Push Power',desc:'Hit puck harder',max:5,cost:[50,120,260,520,1000],level:0},
-  goal:{name:'Goal Size',desc:'Smaller goal = harder to score on you',max:5,cost:[60,150,320,640,1200],level:0}
+  push:{name:'Push Power',desc:'Hit puck harder',max:5,cost:[40,100,220,450,900],level:0},
+  goal:{name:'Goal Size',desc:'Smaller goal for opponent',max:5,cost:[60,150,320,640,1200],level:0}
 };
 Object.keys(upgrades).forEach(k=>{upgrades[k].level=parseInt(localStorage.getItem('egl_up_'+k)||'0')});
 function save(){localStorage.setItem('egl_coins',coins);Object.keys(upgrades).forEach(k=>localStorage.setItem('egl_up_'+k,upgrades[k].level))}
 
-const PUCK={x:0,y:0,vx:0,vy:0,r:8,trail:[]};
-const player={x:0,y:0,vx:0,vy:0};
-const enemy={x:0,y:0,vx:0,vy:0};
 const keys={};
 window.addEventListener('keydown',e=>{keys[e.key]=true});
 window.addEventListener('keyup',e=>{keys[e.key]=false});
 
 let mouseX=W/2,mouseY=H/2;
-let useMouse=false;
-canvas.addEventListener('mousedown',()=>{useMouse=true});
-canvas.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY});
+canvas.addEventListener('mousemove',e=>{
+  const r=canvas.getBoundingClientRect();
+  mouseX=(e.clientX-r.left)*(W/r.width);
+  mouseY=(e.clientY-r.top)*(H/r.height);
+});
 
-function circleRadius(){return 28+upgrades.size.level*4}
-function playerSpeed(){return 4+upgrades.speed.level*0.8}
-function enemyRadius(){return 28}
-function goalSize(){return Math.max(60,H*0.22)-upgrades.goal.level*10}
-
-function show(id){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));document.getElementById(id).classList.add('show')}
+function show(id){
+  document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+}
 
 // SPLASH
 const commands=['git push --force','npm run dev','make it work','git blame','kill -9 1'];
@@ -229,30 +227,180 @@ function doLogin(){
   const u=document.getElementById('loginUser').value.trim();
   const p=document.getElementById('loginPass').value.trim();
   if(!u||!p){document.getElementById('loginErr').textContent='fill in all fields';return}
-  if(u.length<1||p.length<1){document.getElementById('loginErr').textContent='too short';return}
   playerLogin=u;
-  document.getElementById('menuScreen').querySelector('.menu-title').textContent='EGL HOCKEY';
-  document.getElementById('menuScreen').querySelector('.menu-sub').textContent='welcome, '+u;
-  showSearch();
+  document.getElementById('welcomeMsg').textContent='welcome, '+u;
+  connectWs();
 }
-function showSearch(){
+
+function connectWs(){
+  const proto=location.protocol==='https:'?'wss:':'ws:';
+  ws=new WebSocket(proto+'//'+location.host);
+  ws.onopen=()=>{
+    ws.send(JSON.stringify({type:'join',name:playerLogin,upgradePush:upgrades.push.level,upgradeSpeed:upgrades.speed.level}));
+  };
+  ws.onmessage=(e)=>{
+    let msg;try{msg=JSON.parse(e.data)}catch{return}
+    handleMessage(msg);
+  };
+  ws.onclose=()=>{
+    if(state==='playing'||state==='searching'){
+      endRound(false,'disconnected');
+    }
+  };
   show('searchScreen');
-  const dur=1500+Math.random()*2000;
-  setTimeout(()=>{show('menuScreen')},dur);
+  state='searching';
+  animateWaitBar();
+}
+
+function animateWaitBar(){
+  const bar=document.getElementById('waitingBar');
+  if(state!=='searching'){bar.style.width='0';return}
+  let w=parseFloat(bar.style.width)||0;
+  w+=0.3;if(w>95)w=0;
+  bar.style.width=w+'%';
+  requestAnimationFrame(animateWaitBar);
+}
+
+document.getElementById('cancelSearch').onclick=()=>{
+  if(ws&&ws.readyState===1)ws.send(JSON.stringify({type:'cancel'}));
+  ws.close();ws=null;
+  show('menuScreen');state='menu';
+};
+
+function handleMessage(msg){
+  switch(msg.type){
+    case 'queued':
+      state='searching';
+      break;
+    case 'matched':
+      state='playing';
+      mySide=msg.side;
+      opponentName=msg.opponent;
+      document.getElementById('hudNames').textContent=playerLogin+' vs '+opponentName;
+      show('gameWrap');
+      document.getElementById('hud').classList.add('show');
+      document.getElementById('shopPanel').classList.remove('open');
+      break;
+    case 'state':
+      lastState=msg;
+      break;
+    case 'goal':
+      document.getElementById('hMe').textContent=msg.score[mySide];
+      document.getElementById('hEn').textContent=msg.score[1-mySide];
+      document.getElementById('goalFx').style.background='rgba(255,255,255,.06)';
+      document.getElementById('goalFx').classList.add('show');
+      setTimeout(()=>document.getElementById('goalFx').classList.remove('show'),200);
+      break;
+    case 'gameover':
+      endRound(msg.won,msg.score);
+      break;
+    case 'opponent_left':
+      endRound(true,'opponent left');
+      break;
+  }
+}
+
+// INPUT
+function sendInput(){
+  if(!ws||ws.readyState!==1||state!=='playing')return;
+  let dx=0,dy=0;
+  if(keys['w']||keys['ArrowUp'])dy=-1;
+  if(keys['s']||keys['ArrowDown'])dy=1;
+  if(keys['a']||keys['ArrowLeft'])dx=-1;
+  if(keys['d']||keys['ArrowRight'])dx=1;
+  ws.send(JSON.stringify({type:'input',dx,dy}));
+}
+setInterval(sendInput,1000/30);
+
+// RENDER
+function draw(){
+  ctx.fillStyle='#0a0a0f';ctx.fillRect(0,0,W,H);
+  if(!lastState)return;
+
+  const s=lastState;
+  const goalH=100-upgrades.goal.level*8;
+  const gY=H/2-goalH/2;
+
+  // Center line & circle
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
+  ctx.beginPath();ctx.arc(W/2,H/2,50,0,Math.PI*2);ctx.stroke();
+
+  // Goals
+  ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=2;
+  ctx.strokeRect(0,gY,10,goalH);
+  ctx.strokeRect(W-10,gY,10,goalH);
+
+  // Territory line glow
+  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
+
+  // Puck trail (simple)
+  ctx.beginPath();ctx.arc(s.puck.x,s.puck.y,PUCK_R,0,Math.PI*2);
+  ctx.fillStyle='#fff';ctx.shadowColor='#fff';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
+
+  // My circle
+  const myP=mySide===0?s.p0:s.p1;
+  const enP=mySide===0?s.p1:s.p0;
+  ctx.beginPath();ctx.arc(myP.x,myP.y,30,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=2.5;ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.07)';ctx.fill();
+  ctx.beginPath();ctx.arc(myP.x,myP.y,3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.8)';ctx.fill();
+
+  // Enemy circle
+  ctx.beginPath();ctx.arc(enP.x,enP.y,30,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.03)';ctx.fill();
+  ctx.beginPath();ctx.arc(enP.x,enP.y,3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.3)';ctx.fill();
+}
+
+function gameLoop(){draw();requestAnimationFrame(gameLoop)}
+gameLoop();
+
+// GAME END
+function endRound(won,scoreOrMsg){
+  state='menu';
+  document.getElementById('hud').style.display='none';
+  document.getElementById('gameWrap').style.display='none';
+  document.getElementById('waitingBar').style.width='0';
+  if(typeof scoreOrMsg==='object'){
+    const s=scoreOrMsg;
+    document.getElementById('resultTitle').textContent=won?'YOU WIN':'YOU LOSE';
+    document.getElementById('resultTitle').style.color=won?'rgba(255,255,255,.9)':'rgba(255,255,255,.4)';
+    document.getElementById('resultSub').textContent=s[mySide]+' - '+s[1-mySide];
+    document.getElementById('resultReward').textContent=won?'+50 coins':'+15 coins';
+  }else{
+    document.getElementById('resultTitle').textContent=won?'YOU WIN':'YOU LOSE';
+    document.getElementById('resultTitle').style.color=won?'rgba(255,255,255,.9)':'rgba(255,255,255,.4)';
+    document.getElementById('resultSub').textContent=scoreOrMsg||'';
+    document.getElementById('resultReward').textContent=won?'+50 coins':'+15 coins';
+  }
+  if(won){coins+=50}else{coins+=15}
+  save();
+  lastState=null;
+  show('resultScreen');
 }
 
 // MENU
-document.getElementById('btnPlay').onclick=()=>startRound();
+document.getElementById('btnPlay').onclick=()=>connectWs();
 document.getElementById('btnShop').onclick=()=>toggleShop();
-document.getElementById('btnRematch').onclick=()=>showSearch();
+document.getElementById('btnRematch').onclick=()=>connectWs();
 document.getElementById('btnBackMenu').onclick=()=>show('menuScreen');
 document.getElementById('hudShop').onclick=()=>toggleShop();
+document.getElementById('hudLeave').onclick=()=>{
+  if(ws&&ws.readyState===1)ws.send(JSON.stringify({type:'leave'}));
+  ws.close();ws=null;
+  document.getElementById('hud').style.display='none';
+  document.getElementById('gameWrap').style.display='none';
+  document.getElementById('waitingBar').style.width='0';
+  state='menu';lastState=null;
+  show('menuScreen');
+};
 document.getElementById('shopClose').onclick=()=>toggleShop();
 
 function toggleShop(){
-  const p=document.getElementById('shopPanel');
-  p.classList.toggle('open');
-  if(p.classList.contains('open'))renderShop();
+  document.getElementById('shopPanel').classList.toggle('open');
+  if(document.getElementById('shopPanel').classList.contains('open'))renderShop();
 }
 
 function renderShop(){
@@ -268,223 +416,6 @@ function renderShop(){
     list.appendChild(d);
   });
 }
-
-// GAME
-function startRound(){
-  scoreMe=0;scoreEn=0;goalFlash=0;particles=[];
-  document.getElementById('hMe').textContent='0';
-  document.getElementById('hEn').textContent='0';
-  state='playing';
-  document.getElementById('gameCanvas').style.display='block';
-  document.getElementById('hud').classList.add('show');
-  document.getElementById('shopPanel').classList.remove('open');
-  show('gameCanvas');
-  document.getElementById('gameCanvas').style.display='block';
-  document.getElementById('hud').style.display='flex';
-  resetPositions();
-}
-
-function resetPositions(){
-  const r=circleRadius();
-  player.x=W*0.28;player.y=H/2;player.vx=0;player.vy=0;
-  enemy.x=W*0.72;enemy.y=H/2;enemy.vx=0;enemy.vy=0;
-  PUCK.x=W/2;PUCK.y=H/2;
-  const a=(Math.random()-.5)*Math.PI*.4;
-  const d=Math.random()>.5?1:-1;
-  const sp=3;
-  PUCK.vx=Math.cos(a)*sp*d;PUCK.vy=Math.sin(a)*sp;
-  PUCK.trail=[];
-}
-
-function spawnParticles(x,y,count){
-  for(let i=0;i<count;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:1,decay:.02+Math.random()*.03,size:1.5+Math.random()*2.5});
-}
-
-function circleCollide(ax,ay,ar,bx,by,br){
-  const dx=ax-bx,dy=ay-by,d=Math.sqrt(dx*dx+dy*dy);
-  return d<ar+br;
-}
-
-function pushCircle(cx,cy,cr,px,py,ppower){
-  const dx=px-cx,dy=py-cy,d=Math.sqrt(dx*dx+dy*dy)||1;
-  const nx=dx/d,ny=dy/d;
-  return{vx:nx*ppower,vy:ny*ppower};
-}
-
-function update(){
-  if(state!=='playing')return;
-  const r=circleRadius();
-  const spd=playerSpeed();
-  const espd=3+upgrades.speed.level*0.4;
-
-  // Player input
-  if(useMouse){
-    const dx=mouseX-player.x,dy=mouseY-player.y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(d>2){player.vx=(dx/d)*spd;player.vy=(dy/d)*spd}
-    else{player.vx*=.8;player.vy*=.8}
-  }else{
-    if(keys['w']||keys['ArrowUp'])player.vy=-spd;
-    else if(keys['s']||keys['ArrowDown'])player.vy=spd;
-    else player.vy*=.82;
-    if(keys['a']||keys['ArrowLeft'])player.vx=-spd;
-    else if(keys['d']||keys['ArrowRight'])player.vx=spd;
-    else player.vx*=.82;
-  }
-  player.x+=player.vx;player.y+=player.vy;
-  player.x=Math.max(r,Math.min(W-r,player.x));
-  player.y=Math.max(r,Math.min(H-r,player.y));
-
-  // Enemy AI
-  let targetX=PUCK.x,targetY=PUCK.y;
-  const edx=PUCK.x-enemy.x,edy=PUCK.y-enemy.y;
-  const ed=Math.sqrt(edx*edx+edy*edy)||1;
-  // If puck is on enemy's side, chase it. If on player's side, go back to defend
-  if(PUCK.x>W*0.5){
-    const pushPower=2+upgrades.push.level*0.3;
-    enemy.vx+=(edx/ed)*0.12*espd;enemy.vy+=(edy/ed)*0.12*espd;
-  }else{
-    targetX=W*0.72;targetY=H/2;
-    const dx2=targetX-enemy.x,dy2=targetY-enemy.y;
-    enemy.vx+=dx2*0.03;enemy.vy+=dy2*0.03;
-  }
-  enemy.vx*=.88;enemy.vy*=.88;
-  const emax=espd*1.1;
-  if(Math.abs(enemy.vx)>emax)enemy.vx=Math.sign(enemy.vx)*emax;
-  if(Math.abs(enemy.vy)>emax)enemy.vy=Math.sign(enemy.vy)*emax;
-  enemy.x+=enemy.vx;enemy.y+=enemy.vy;
-  enemy.x=Math.max(enemyRadius(),Math.min(W-enemyRadius(),enemy.x));
-  enemy.y=Math.max(enemyRadius(),Math.min(H-enemyRadius(),enemy.y));
-
-  // Player-puck collision
-  if(circleCollide(player.x,player.y,r,PUCK.x,PUCK.y,PUCK.r)){
-    const pp=3+upgrades.push.level*1.2;
-    const push=pushCircle(player.x,player.y,r,PUCK.x,PUCK.y,pp);
-    PUCK.vx=push.vx;PUCK.vy=push.vy;
-    const dx=PUCK.x-player.x,dy=PUCK.y-player.y,d=Math.sqrt(dx*dx+dy*dy)||1;
-    PUCK.x=player.x+(dx/d)*(r+PUCK.r+1);PUCK.y=player.y+(dy/d)*(r+PUCK.r+1);
-    spawnParticles(PUCK.x,PUCK.y,6);
-  }
-
-  // Enemy-puck collision
-  if(circleCollide(enemy.x,enemy.y,enemyRadius(),PUCK.x,PUCK.y,PUCK.r)){
-    const push=pushCircle(enemy.x,enemy.y,enemyRadius(),PUCK.x,PUCK.y,3.5);
-    PUCK.vx=push.vx;PUCK.vy=push.vy;
-    const dx=PUCK.x-enemy.x,dy=PUCK.y-enemy.y,d=Math.sqrt(dx*dx+dy*dy)||1;
-    PUCK.x=enemy.x+(dx/d)*(enemyRadius()+PUCK.r+1);PUCK.y=enemy.y+(dy/d)*(enemyRadius()+PUCK.r+1);
-    spawnParticles(PUCK.x,PUCK.y,6);
-  }
-
-  // Puck movement
-  PUCK.x+=PUCK.vx;PUCK.y+=PUCK.vy;
-  PUCK.vx*=.999;PUCK.vy*=.999;
-  PUCK.trail.push({x:PUCK.x,y:PUCK.y});
-  if(PUCK.trail.length>10)PUCK.trail.shift();
-
-  // Wall bounce
-  if(PUCK.y-PUCK.r<0){PUCK.y=PUCK.r;PUCK.vy*=-1}
-  if(PUCK.y+PUCK.r>H){PUCK.y=H-PUCK.r;PUCK.vy*=-1}
-
-  // Goals
-  const gs=goalSize();
-  const gY=H/2-gs/2;
-
-  // Player goal (left side) - puck enters = enemy scores
-  if(PUCK.x-PUCK.r<10){
-    if(PUCK.y>gY&&PUCK.y<gY+gs){
-      scoreEn++;document.getElementById('hEn').textContent=scoreEn;
-      goalFlash=1;document.getElementById('goalFx').style.background='rgba(255,80,80,.12)';
-      document.getElementById('goalFx').classList.add('show');
-      setTimeout(()=>document.getElementById('goalFx').classList.remove('show'),200);
-      spawnParticles(10,PUCK.y,20);
-      resetPositions();return;
-    }else{PUCK.x=10+PUCK.r;PUCK.vx*=-.8}
-  }
-
-  // Enemy goal (right side) - puck enters = player scores
-  if(PUCK.x+PUCK.r>W-10){
-    if(PUCK.y>gY&&PUCK.y<gY+gs){
-      scoreMe++;document.getElementById('hMe').textContent=scoreMe;
-      goalFlash=1;document.getElementById('goalFx').style.background='rgba(255,255,255,.08)';
-      document.getElementById('goalFx').classList.add('show');
-      setTimeout(()=>document.getElementById('goalFx').classList.remove('show'),200);
-      coins+=15;save();
-      spawnParticles(W-10,PUCK.y,20);
-      resetPositions();return;
-    }else{PUCK.x=W-10-PUCK.r;PUCK.vx*=-.8}
-  }
-
-  // Particles
-  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vx*=.95;p.vy*=.95;p.life-=p.decay});
-  particles=particles.filter(p=>p.life>0);
-  if(goalFlash>0)goalFlash-=.04;
-
-  // Win
-  if(scoreMe>=WIN_SCORE)endRound(true);
-  if(scoreEn>=WIN_SCORE)endRound(false);
-}
-
-function draw(){
-  ctx.fillStyle='#0a0a0f';
-  ctx.fillRect(0,0,W,H);
-
-  // Center line & circle
-  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-  ctx.beginPath();ctx.arc(W/2,H/2,50,0,Math.PI*2);ctx.stroke();
-
-  // Goals
-  const gs=goalSize();const gY=H/2-gs/2;
-  ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=2;
-  ctx.strokeRect(0,gY,10,gs);
-  ctx.strokeRect(W-10,gY,10,gs);
-
-  // Puck trail
-  PUCK.trail.forEach((t,i)=>{
-    const a=(i/PUCK.trail.length)*.25;const s=PUCK.r*(i/PUCK.trail.length);
-    ctx.beginPath();ctx.arc(t.x,t.y,s,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${a})`;ctx.fill();
-  });
-
-  // Puck
-  ctx.beginPath();ctx.arc(PUCK.x,PUCK.y,PUCK.r,0,Math.PI*2);
-  ctx.fillStyle='#fff';ctx.shadowColor='#fff';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
-
-  // Player circle
-  const pr=circleRadius();
-  ctx.beginPath();ctx.arc(player.x,player.y,pr,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=2;ctx.stroke();
-  ctx.fillStyle='rgba(255,255,255,.06)';ctx.fill();
-  ctx.beginPath();ctx.arc(player.x,player.y,3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.7)';ctx.fill();
-
-  // Enemy circle
-  const er=enemyRadius();
-  ctx.beginPath();ctx.arc(enemy.x,enemy.y,er,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=2;ctx.stroke();
-  ctx.fillStyle='rgba(255,255,255,.03)';ctx.fill();
-  ctx.beginPath();ctx.arc(enemy.x,enemy.y,3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.35)';ctx.fill();
-
-  // Particles
-  particles.forEach(p=>{
-    ctx.globalAlpha=p.life;ctx.fillStyle='rgba(255,255,255,.8)';
-    ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size);
-  });
-  ctx.globalAlpha=1;
-}
-
-function endRound(won){
-  state='menu';
-  document.getElementById('hud').style.display='none';
-  document.getElementById('gameCanvas').style.display='none';
-  document.getElementById('resultTitle').textContent=won?'YOU WIN':'YOU LOSE';
-  document.getElementById('resultTitle').style.color=won?'rgba(255,255,255,.9)':'rgba(255,255,255,.4)';
-  document.getElementById('resultSub').textContent=won?scoreMe+' - '+scoreEn+'  dominance.':'you fought well.';
-  document.getElementById('resultReward').textContent=won?'+50 coins earned':'+15 coins earned';
-  if(won){coins+=50;save()}else{coins+=15;save()}
-  show('resultScreen');
-}
-
-function gameLoop(){update();draw();requestAnimationFrame(gameLoop)}
-gameLoop();
 </script>
 </body>
 </html>
