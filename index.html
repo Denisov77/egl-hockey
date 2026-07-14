@@ -7,10 +7,11 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:'Courier New',monospace;color:#fff}
-.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:100;background:#0a0a0f;flex-direction:column}
-.overlay.show{display:flex}
 
-#splash{z-index:1000;transition:opacity 1s}
+.screen{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:#0a0a0f;z-index:100}
+.screen.active{display:flex}
+
+#splash{z-index:200;transition:opacity 1s}
 #splash.hide{opacity:0;pointer-events:none}
 .egl-container{display:flex;flex-direction:column;align-items:center;gap:6px}
 .egl-line{display:flex;flex-direction:column;align-items:center;opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.22,1,.36,1)}
@@ -18,7 +19,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
 .egl-letter{font-size:clamp(60px,12vw,120px);font-weight:900;line-height:1;color:#fff}
 @keyframes letterIn{0%{opacity:0;transform:scale(2.5);filter:blur(20px)}60%{opacity:1;transform:scale(.92);filter:blur(0)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
 .egl-line.show .egl-letter{animation:letterIn .6s cubic-bezier(.22,1,.36,1) forwards}
-@keyframes glowPulse{0%,100%{text-shadow:0 0 20px rgba(255,255,255,.3),0 0 40px rgba(255,255,255,.15)}50%{text-shadow:0 0 40px rgba(255,255,255,.5),0 0 80px rgba(255,255,255,.25)}}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 20px rgba(255,255,255,.3)}50%{text-shadow:0 0 40px rgba(255,255,255,.5),0 0 80px rgba(255,255,255,.2)}}
 .egl-line.show .egl-letter{animation:letterIn .6s cubic-bezier(.22,1,.36,1) forwards,glowPulse 2.5s ease-in-out .6s infinite}
 .egl-sub{display:flex;align-items:center;gap:12px;margin-top:4px;opacity:0;transform:translateX(15px);transition:all .5s .3s}
 .egl-line.show .egl-sub{opacity:1;transform:translateX(0)}
@@ -28,7 +29,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
 .cmd-line.show{opacity:1}
 .cursor{display:inline-block;width:7px;height:1.1em;background:rgba(255,255,255,.45);animation:blink 1.1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
 @keyframes blink{50%{opacity:0}}
-.scanline{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);z-index:1001;opacity:0;transition:opacity 1s 2s}
+.scanline{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);z-index:1001;opacity:0;transition:opacity 1s 2s;pointer-events:none}
 .scanline.show{opacity:1}
 
 .box{text-align:center}
@@ -39,7 +40,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
 .inp::placeholder{color:rgba(255,255,255,.2)}
 .btn{display:block;width:260px;padding:10px;margin:0 auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-family:inherit;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s}
 .btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
-.btn-sm{display:inline-block;width:auto;padding:10px 24px;margin:0 4px}
 .err{font-size:11px;color:rgba(255,80,80,.7);height:16px;letter-spacing:1px;margin-top:4px}
 
 .spinner{width:50px;height:50px;border:2px solid rgba(255,255,255,.08);border-top-color:rgba(255,255,255,.4);border-radius:50%;animation:spin .8s linear infinite;margin:20px auto}
@@ -61,7 +61,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
 .shop-coins{font-size:13px;color:rgba(255,215,0,.6);letter-spacing:1px}
 .shop-close{background:none;border:none;color:rgba(255,255,255,.3);font-size:20px;cursor:pointer;transition:color .2s}
 .shop-close:hover{color:#fff}
-.up-item{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s;position:relative}
+.up-item{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s}
 .up-item:hover{border-color:rgba(255,255,255,.15)}
 .up-item.maxed{opacity:.3;pointer-events:none}
 .up-name{font-size:12px;color:rgba(255,255,255,.7);letter-spacing:1px;margin-bottom:4px}
@@ -72,9 +72,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:
 .up-bar{width:100%;height:2px;background:rgba(255,255,255,.05);margin-top:8px}
 .up-bar-fill{height:100%;background:rgba(255,255,255,.3);transition:width .3s}
 
-#gameWrap{display:none;position:fixed;inset:0;z-index:5;align-items:center;justify-content:center;background:#0a0a0f}
-#gameWrap.show{display:flex}
-canvas{display:block;border:1px solid rgba(255,255,255,.06)}
 #hud{position:fixed;top:0;left:0;right:0;padding:10px 20px;display:none;justify-content:space-between;align-items:center;z-index:10}
 #hud.show{display:flex}
 .hud-left{display:flex;align-items:center;gap:16px}
@@ -84,23 +81,26 @@ canvas{display:block;border:1px solid rgba(255,255,255,.06)}
 .hud-score .sep{color:rgba(255,255,255,.15);margin:0 6px}
 .hud-score .en{color:rgba(255,255,255,.9)}
 .hud-btns{display:flex;gap:8px}
-.hud-shop{background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.4);padding:5px 12px;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:1px;transition:all .2s}
-.hud-shop:hover{border-color:rgba(255,255,255,.3);color:#fff}
-#goalFx{position:fixed;inset:0;pointer-events:none;z-index:15;opacity:0;transition:opacity .15s}
-#goalFx.show{opacity:1}
+.hud-btn{background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.4);padding:5px 12px;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:1px;transition:all .2s}
+.hud-btn:hover{border-color:rgba(255,255,255,.3);color:#fff}
 
-#waitingBar{position:fixed;bottom:0;left:0;height:2px;background:rgba(255,255,255,.15);z-index:200;transition:width .3s;width:0}
+#goalFx{position:fixed;inset:0;pointer-events:none;z-index:15;opacity:0;transition:opacity .15s}
+#goalFx.flash{opacity:1}
+
+#waitingBar{position:fixed;bottom:0;left:0;height:2px;background:rgba(255,255,255,.15);z-index:200;transition:width .1s;width:0}
+
+canvas{display:block}
 
 @media(max-width:768px){#shopPanel{width:100%;right:-100%}}
 </style>
 </head>
 <body>
 
-<div id="scanline" class="scanline"></div>
+<div class="scanline" id="scanline"></div>
 <div id="goalFx"></div>
 <div id="waitingBar"></div>
 
-<div id="splash" class="overlay show">
+<div class="screen active" id="splash">
   <div class="egl-container">
     <div class="egl-line"><span class="egl-letter">E</span><div class="egl-sub"><span class="egl-sub-line"></span><span class="egl-meaning">egorenchikxxer</span></div></div>
     <div class="egl-line"><span class="egl-letter">G</span><div class="egl-sub"><span class="egl-sub-line"></span><span class="egl-meaning">gliter</span></div></div>
@@ -109,7 +109,7 @@ canvas{display:block;border:1px solid rgba(255,255,255,.06)}
   <div class="cmd-line" id="cmdLine"><span class="cmd-text"></span><span class="cursor"></span></div>
 </div>
 
-<div id="loginScreen" class="overlay">
+<div class="screen" id="loginScreen">
   <div class="box">
     <h2>EGL HOCKEY</h2>
     <p>enter credentials to continue</p>
@@ -120,7 +120,7 @@ canvas{display:block;border:1px solid rgba(255,255,255,.06)}
   </div>
 </div>
 
-<div id="searchScreen" class="overlay">
+<div class="screen" id="searchScreen">
   <div class="box">
     <p style="margin-bottom:20px">SEARCHING FOR MATCH</p>
     <div class="spinner"></div>
@@ -129,14 +129,14 @@ canvas{display:block;border:1px solid rgba(255,255,255,.06)}
   </div>
 </div>
 
-<div id="menuScreen" class="overlay">
+<div class="screen" id="menuScreen">
   <div class="menu-title">EGL HOCKEY</div>
   <div class="menu-sub" id="welcomeMsg">push the puck. score goals.</div>
   <button class="btn-menu" id="btnPlay">PLAY</button>
   <button class="btn-menu" id="btnShop">SHOP</button>
 </div>
 
-<div id="resultScreen" class="overlay">
+<div class="screen" id="resultScreen">
   <div class="result-title" id="resultTitle">YOU WIN</div>
   <div class="result-sub" id="resultSub"></div>
   <div class="result-reward" id="resultReward"></div>
@@ -155,25 +155,28 @@ canvas{display:block;border:1px solid rgba(255,255,255,.06)}
   <div id="shopList"></div>
 </div>
 
-<div id="gameWrap"><canvas id="c"></canvas></div>
+<div id="gameArea" style="display:none;position:fixed;inset:0;z-index:5;background:#0a0a0f;align-items:center;justify-content:center">
+  <canvas id="c"></canvas>
+</div>
+
 <div id="hud">
   <div class="hud-left">
     <div class="hud-score"><span class="me" id="hMe">0</span><span class="sep">:</span><span class="en" id="hEn">0</span></div>
     <div class="hud-names" id="hudNames"></div>
   </div>
   <div class="hud-btns">
-    <button class="hud-shop" id="hudShop">SHOP</button>
-    <button class="hud-shop" id="hudLeave">LEAVE</button>
+    <button class="hud-btn" id="hudShop">SHOP</button>
+    <button class="hud-btn" id="hudLeave">LEAVE</button>
   </div>
 </div>
 
 <script>
-const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
-let W=900,H=500;
-canvas.width=W;canvas.height=H;
 const PUCK_R=8;
+const FIELD_W=900,FIELD_H=500;
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+canvas.width=FIELD_W;canvas.height=FIELD_H;
 
-let state='splash';
+let state='idle';
 let playerLogin='';
 let mySide=0;
 let coins=parseInt(localStorage.getItem('egl_coins')||'0');
@@ -193,21 +196,13 @@ const keys={};
 window.addEventListener('keydown',e=>{keys[e.key]=true});
 window.addEventListener('keyup',e=>{keys[e.key]=false});
 
-let mouseX=W/2,mouseY=H/2;
-canvas.addEventListener('mousemove',e=>{
-  const r=canvas.getBoundingClientRect();
-  mouseX=(e.clientX-r.left)*(W/r.width);
-  mouseY=(e.clientY-r.top)*(H/r.height);
-});
-
-function show(id){
-  document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));
-  document.getElementById('gameWrap').classList.remove('show');
-  document.getElementById('gameWrap').style.display='none';
-  document.getElementById('hud').classList.remove('show');
-  document.getElementById('hud').style.display='';
-  document.getElementById(id).classList.add('show');
-  if(id==='gameWrap')document.getElementById('gameWrap').style.display='flex';
+function nav(screenId){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(screenId);
+  if(el)el.classList.add('active');
+  document.getElementById('hud').style.display='none';
+  document.getElementById('gameArea').style.display='none';
+  document.getElementById('waitingBar').style.width='0';
 }
 
 // SPLASH
@@ -215,15 +210,15 @@ const commands=['git push --force','npm run dev','make it work','git blame','kil
 let cmdIdx=0,charIdx=0;
 function typeCmd(){
   const el=document.querySelector('.cmd-text');
+  if(!el)return;
   const c=commands[cmdIdx];
   if(charIdx<=c.length){el.textContent='$ '+c.substring(0,charIdx);charIdx++;setTimeout(typeCmd,55+Math.random()*35)}
   else{setTimeout(()=>{charIdx=0;cmdIdx=(cmdIdx+1)%commands.length;el.textContent='';typeCmd()},2200)}
 }
 setTimeout(()=>{
-  const lines=document.querySelectorAll('.egl-line');
-  lines.forEach((l,i)=>setTimeout(()=>l.classList.add('show'),400+i*700));
-  setTimeout(()=>{document.querySelector('.cmd-line').classList.add('show');document.querySelector('.scanline').classList.add('show');typeCmd()},2800);
-  setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>show('loginScreen'),800)},6500);
+  document.querySelectorAll('.egl-line').forEach((l,i)=>setTimeout(()=>l.classList.add('show'),400+i*700));
+  setTimeout(()=>{document.querySelector('.cmd-line').classList.add('show');document.getElementById('scanline').classList.add('show');typeCmd()},2800);
+  setTimeout(()=>{document.getElementById('splash').classList.add('hide');setTimeout(()=>nav('loginScreen'),900)},6500);
 },200);
 
 // LOGIN
@@ -239,23 +234,34 @@ function doLogin(){
   connectWs();
 }
 
+// WEBSOCKET
 function connectWs(){
+  if(ws){try{ws.close()}catch(e){}}
   const proto=location.protocol==='https:'?'wss:':'ws:';
-  ws=new WebSocket(proto+'//'+location.host);
+  const url=proto+'//'+location.host;
+  console.log('Connecting to',url);
+  ws=new WebSocket(url);
+  state='searching';
+  nav('searchScreen');
+
   ws.onopen=()=>{
+    console.log('WS connected');
     ws.send(JSON.stringify({type:'join',name:playerLogin,upgradePush:upgrades.push.level,upgradeSpeed:upgrades.speed.level}));
   };
   ws.onmessage=(e)=>{
     let msg;try{msg=JSON.parse(e.data)}catch{return}
-    handleMessage(msg);
+    console.log('WS msg:',msg.type);
+    handleMsg(msg);
   };
+  ws.onerror=(e)=>{console.log('WS error',e)};
   ws.onclose=()=>{
-    if(state==='playing'||state==='searching'){
+    console.log('WS closed, state=',state);
+    if(state==='playing'){
       endRound(false,'disconnected');
+    }else if(state==='searching'){
+      nav('menuScreen');state='menu';
     }
   };
-  show('searchScreen');
-  state='searching';
   animateWaitBar();
 }
 
@@ -270,23 +276,24 @@ function animateWaitBar(){
 
 document.getElementById('cancelSearch').onclick=()=>{
   if(ws&&ws.readyState===1)ws.send(JSON.stringify({type:'cancel'}));
-  ws.close();ws=null;
-  show('menuScreen');state='menu';
+  try{ws.close()}catch(e){}
+  ws=null;state='menu';
+  nav('menuScreen');
 };
 
-function handleMessage(msg){
+function handleMsg(msg){
   switch(msg.type){
-    case 'queued':
-      state='searching';
-      break;
+    case 'queued':state='searching';break;
     case 'matched':
-      state='playing';
-      mySide=msg.side;
-      opponentName=msg.opponent;
+      state='playing';mySide=msg.side;opponentName=msg.opponent;
       document.getElementById('hudNames').textContent=playerLogin+' vs '+opponentName;
-      show('gameWrap');
+      document.getElementById('hMe').textContent='0';
+      document.getElementById('hEn').textContent='0';
+      nav('gameArea');
+      document.getElementById('gameArea').style.display='flex';
+      document.getElementById('hud').style.display='flex';
       document.getElementById('hud').classList.add('show');
-      document.getElementById('shopPanel').classList.remove('open');
+      lastState=null;
       break;
     case 'state':
       lastState=msg;
@@ -294,9 +301,10 @@ function handleMessage(msg){
     case 'goal':
       document.getElementById('hMe').textContent=msg.score[mySide];
       document.getElementById('hEn').textContent=msg.score[1-mySide];
-      document.getElementById('goalFx').style.background='rgba(255,255,255,.06)';
-      document.getElementById('goalFx').classList.add('show');
-      setTimeout(()=>document.getElementById('goalFx').classList.remove('show'),200);
+      const fx=document.getElementById('goalFx');
+      fx.style.background='rgba(255,255,255,.06)';
+      fx.classList.add('flash');
+      setTimeout(()=>fx.classList.remove('flash'),200);
       break;
     case 'gameover':
       endRound(msg.won,msg.score);
@@ -308,7 +316,7 @@ function handleMessage(msg){
 }
 
 // INPUT
-function sendInput(){
+setInterval(()=>{
   if(!ws||ws.readyState!==1||state!=='playing')return;
   let dx=0,dy=0;
   if(keys['w']||keys['ArrowUp'])dy=-1;
@@ -316,45 +324,35 @@ function sendInput(){
   if(keys['a']||keys['ArrowLeft'])dx=-1;
   if(keys['d']||keys['ArrowRight'])dx=1;
   ws.send(JSON.stringify({type:'input',dx,dy}));
-}
-setInterval(sendInput,1000/30);
+},1000/30);
 
 // RENDER
 function draw(){
-  ctx.fillStyle='#0a0a0f';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#0a0a0f';ctx.fillRect(0,0,FIELD_W,FIELD_H);
   if(!lastState)return;
-
   const s=lastState;
   const goalH=100-upgrades.goal.level*8;
-  const gY=H/2-goalH/2;
+  const gY=FIELD_H/2-goalH/2;
 
-  // Center line & circle
   ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-  ctx.beginPath();ctx.arc(W/2,H/2,50,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(FIELD_W/2,0);ctx.lineTo(FIELD_W/2,FIELD_H);ctx.stroke();
+  ctx.beginPath();ctx.arc(FIELD_W/2,FIELD_H/2,50,0,Math.PI*2);ctx.stroke();
 
-  // Goals
   ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=2;
   ctx.strokeRect(0,gY,10,goalH);
-  ctx.strokeRect(W-10,gY,10,goalH);
+  ctx.strokeRect(FIELD_W-10,gY,10,goalH);
 
-  // Territory line glow
-  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-
-  // Puck trail (simple)
   ctx.beginPath();ctx.arc(s.puck.x,s.puck.y,PUCK_R,0,Math.PI*2);
   ctx.fillStyle='#fff';ctx.shadowColor='#fff';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
 
-  // My circle
   const myP=mySide===0?s.p0:s.p1;
   const enP=mySide===0?s.p1:s.p0;
+
   ctx.beginPath();ctx.arc(myP.x,myP.y,30,0,Math.PI*2);
   ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=2.5;ctx.stroke();
   ctx.fillStyle='rgba(255,255,255,.07)';ctx.fill();
   ctx.beginPath();ctx.arc(myP.x,myP.y,3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.8)';ctx.fill();
 
-  // Enemy circle
   ctx.beginPath();ctx.arc(enP.x,enP.y,30,0,Math.PI*2);
   ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=2;ctx.stroke();
   ctx.fillStyle='rgba(255,255,255,.03)';ctx.fill();
@@ -364,46 +362,40 @@ function draw(){
 function gameLoop(){draw();requestAnimationFrame(gameLoop)}
 gameLoop();
 
-// GAME END
 function endRound(won,scoreOrMsg){
-  state='menu';
+  state='menu';lastState=null;
   document.getElementById('hud').style.display='none';
-  document.getElementById('gameWrap').classList.remove('show');
-  document.getElementById('gameWrap').style.display='none';
+  document.getElementById('gameArea').style.display='none';
   document.getElementById('waitingBar').style.width='0';
   if(typeof scoreOrMsg==='object'){
-    const s=scoreOrMsg;
     document.getElementById('resultTitle').textContent=won?'YOU WIN':'YOU LOSE';
-    document.getElementById('resultTitle').style.color=won?'rgba(255,255,255,.9)':'rgba(255,255,255,.4)';
-    document.getElementById('resultSub').textContent=s[mySide]+' - '+s[1-mySide];
+    document.getElementById('resultTitle').style.color=won?'#fff':'rgba(255,255,255,.4)';
+    document.getElementById('resultSub').textContent=scoreOrMsg[mySide]+' - '+scoreOrMsg[1-mySide];
     document.getElementById('resultReward').textContent=won?'+50 coins':'+15 coins';
   }else{
     document.getElementById('resultTitle').textContent=won?'YOU WIN':'YOU LOSE';
-    document.getElementById('resultTitle').style.color=won?'rgba(255,255,255,.9)':'rgba(255,255,255,.4)';
+    document.getElementById('resultTitle').style.color=won?'#fff':'rgba(255,255,255,.4)';
     document.getElementById('resultSub').textContent=scoreOrMsg||'';
     document.getElementById('resultReward').textContent=won?'+50 coins':'+15 coins';
   }
-  if(won){coins+=50}else{coins+=15}
+  if(won)coins+=50;else coins+=15;
   save();
-  lastState=null;
-  show('resultScreen');
+  nav('resultScreen');
 }
 
 // MENU
 document.getElementById('btnPlay').onclick=()=>connectWs();
 document.getElementById('btnShop').onclick=()=>toggleShop();
 document.getElementById('btnRematch').onclick=()=>connectWs();
-document.getElementById('btnBackMenu').onclick=()=>show('menuScreen');
+document.getElementById('btnBackMenu').onclick=()=>{state='menu';nav('menuScreen')};
 document.getElementById('hudShop').onclick=()=>toggleShop();
 document.getElementById('hudLeave').onclick=()=>{
   if(ws&&ws.readyState===1)ws.send(JSON.stringify({type:'leave'}));
-  ws.close();ws=null;
+  try{ws.close()}catch(e){}
+  ws=null;state='menu';lastState=null;
   document.getElementById('hud').style.display='none';
-  document.getElementById('gameWrap').classList.remove('show');
-  document.getElementById('gameWrap').style.display='none';
-  document.getElementById('waitingBar').style.width='0';
-  state='menu';lastState=null;
-  show('menuScreen');
+  document.getElementById('gameArea').style.display='none';
+  nav('menuScreen');
 };
 document.getElementById('shopClose').onclick=()=>toggleShop();
 
@@ -414,8 +406,7 @@ function toggleShop(){
 
 function renderShop(){
   document.getElementById('shopCoins').textContent='$ '+coins;
-  const list=document.getElementById('shopList');
-  list.innerHTML='';
+  const list=document.getElementById('shopList');list.innerHTML='';
   Object.keys(upgrades).forEach(k=>{
     const u=upgrades[k];const lv=u.level;const maxed=lv>=u.max;const cost=maxed?0:u.cost[lv];const can=coins>=cost&&!maxed;
     const d=document.createElement('div');
